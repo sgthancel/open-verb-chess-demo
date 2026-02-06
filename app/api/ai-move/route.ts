@@ -200,7 +200,7 @@ export async function POST(req: Request) {
     if (count >= 50) {
       return Response.json({
         move: null,
-        reasoning: "Demo limit reached (50 moves/day). Please fork the repo at github.com/yourusername/open-verb-chess-demo to continue playing."
+        reasoning: "Demo limit reached (50 moves/day). Please fork the repo at github.com/sgthancel/open-verb-chess-demo to continue playing without limits."
       }, { status: 403 })
     }
 

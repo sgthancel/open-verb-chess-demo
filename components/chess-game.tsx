@@ -109,6 +109,26 @@ export function ChessGame() {
           return
         }
 
+        if (response.status === 403 || response.status === 429) {
+          const data = await response.json()
+          setIsRunning(false)
+          abortRef.current = true
+          setIsThinking(false)
+
+          // Add the error action to the log
+          const errorAction = {
+            id: `error-${Date.now()}`,
+            verb: "system.error",
+            agent: currentAgent.id,
+            args: { status: response.status },
+            result: { ok: false, error: data.reasoning || data.error || "Limit reached" },
+            timestamp: Date.now(),
+            reasoning: data.reasoning
+          }
+          setActionLog((prev) => [...prev, errorAction as any])
+          return
+        }
+
         const { move: moveUCI, reasoning } = await response.json()
 
         // Execute OpenVerb make_move verb
@@ -230,21 +250,42 @@ export function ChessGame() {
           <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-mono font-bold text-xs">OV</span>
           </div>
-          <div>
-            <h1 className="text-sm font-semibold text-foreground font-mono tracking-tight">
+          <div className="flex flex-col">
+            <h1 className="text-sm font-semibold text-foreground font-mono tracking-tight leading-none uppercase">
               OpenVerb Chess
             </h1>
-            <p className="text-[11px] text-muted-foreground font-mono hidden sm:block">
-              AI agents playing through the OpenVerb protocol
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <a
+                href="https://openverb.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-primary hover:underline font-mono"
+              >
+                openverb.org
+              </a>
+              <span className="text-[10px] text-muted-foreground">•</span>
+              <a
+                href="https://github.com/sgthancel/open-verb-chess-demo.git"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-muted-foreground hover:text-foreground font-mono truncate max-w-[150px] sm:max-w-none"
+              >
+                sgthancel/open-verb-chess-demo
+              </a>
+            </div>
           </div>
         </div>
-        <a
-          href="/about"
-          className="text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
-        >
-          How it works
-        </a>
+        <div className="flex items-center gap-4">
+          <p className="text-[10px] text-muted-foreground font-mono hidden md:block">
+            Reference architecture for Agentic AI
+          </p>
+          <a
+            href="/about"
+            className="text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
+          >
+            How it works
+          </a>
+        </div>
       </header>
 
       {/* Main Content - stacks on mobile, side-by-side on lg */}
