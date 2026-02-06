@@ -32,7 +32,7 @@ function PieceDisplay({ piece }: { piece: Square }) {
   return (
     <span
       className={cn(
-        "text-3xl md:text-4xl leading-none select-none drop-shadow-md",
+        "text-[8vw] sm:text-3xl md:text-4xl leading-none select-none drop-shadow-md",
         piece.color === "w" ? "text-[hsl(40,30%,95%)]" : "text-[hsl(220,20%,12%)]"
       )}
       style={{ textShadow: piece.color === "w" ? "0 1px 2px rgba(0,0,0,0.4)" : "0 1px 2px rgba(255,255,255,0.15)" }}
@@ -114,7 +114,7 @@ export function ChessBoard({
                   type="button"
                   onClick={() => handleSquareClick(sq, r, c)}
                   className={cn(
-                    "w-12 h-12 md:w-16 md:h-16 flex items-center justify-center relative transition-colors duration-100",
+                    "w-[11vw] h-[11vw] sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center relative transition-colors duration-100",
                     isLight
                       ? "bg-[hsl(var(--board-light))]"
                       : "bg-[hsl(var(--board-dark))]",
@@ -137,10 +137,10 @@ export function ChessBoard({
 
                   {/* Move target indicator */}
                   {isTarget && !piece && (
-                    <div className="absolute w-3 h-3 md:w-4 md:h-4 rounded-full bg-[hsl(var(--board-highlight))] opacity-50" />
+                    <div className="absolute w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full bg-[hsl(var(--board-highlight))] opacity-50" />
                   )}
                   {isTarget && piece && (
-                    <div className="absolute inset-0 border-4 border-[hsl(var(--board-highlight))] opacity-60 rounded-sm" />
+                    <div className="absolute inset-0 border-2 sm:border-4 border-[hsl(var(--board-highlight))] opacity-60 rounded-sm" />
                   )}
 
                   {/* Coordinate labels */}

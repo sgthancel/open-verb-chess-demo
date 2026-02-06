@@ -14,7 +14,12 @@ export function MoveHistory({ moves, className }: MoveHistoryProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (bottomRef.current) {
+      const scrollContainer = bottomRef.current.closest('[data-radix-scroll-area-viewport]')
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: "smooth" })
+      }
+    }
   }, [moves.length])
 
   // Group moves into pairs (white + black)

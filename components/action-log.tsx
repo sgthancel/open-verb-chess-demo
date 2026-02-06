@@ -46,7 +46,12 @@ export function ActionLog({ actions, className }: ActionLogProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (bottomRef.current) {
+      const scrollContainer = bottomRef.current.closest('[data-radix-scroll-area-viewport]')
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: "smooth" })
+      }
+    }
   }, [actions.length])
 
   return (
@@ -88,9 +93,9 @@ export function ActionLog({ actions, className }: ActionLogProps) {
                   <span className="text-muted-foreground">
                     {action.agent}
                   </span>
-                  {san && (
+                  {typeof san === "string" && (
                     <span className="text-primary font-bold ml-auto">
-                      {san as string}
+                      {san}
                     </span>
                   )}
                 </div>
@@ -99,9 +104,9 @@ export function ActionLog({ actions, className }: ActionLogProps) {
                     {action.reasoning}
                   </p>
                 )}
-                {!isOk && (action.result as Record<string, unknown>).error && (
+                {!isOk && (action.result as any).error && (
                   <p className="mt-1 text-destructive text-[11px] pl-4">
-                    Error: {(action.result as Record<string, unknown>).error as string}
+                    Error: {String((action.result as any).error)}
                   </p>
                 )}
               </div>

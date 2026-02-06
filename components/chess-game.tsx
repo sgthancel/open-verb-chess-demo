@@ -223,9 +223,9 @@ export function ChessGame() {
     !isThinking
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="min-h-screen lg:h-screen flex flex-col overflow-x-hidden lg:overflow-hidden bg-background">
       {/* Header */}
-      <header className="border-b border-border px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+      <header className="border-b border-border px-4 py-2.5 flex items-center justify-between flex-shrink-0 z-10 bg-background">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-mono font-bold text-xs">OV</span>
@@ -234,7 +234,7 @@ export function ChessGame() {
             <h1 className="text-sm font-semibold text-foreground font-mono tracking-tight">
               OpenVerb Chess
             </h1>
-            <p className="text-[11px] text-muted-foreground font-mono">
+            <p className="text-[11px] text-muted-foreground font-mono hidden sm:block">
               AI agents playing through the OpenVerb protocol
             </p>
           </div>
@@ -247,12 +247,12 @@ export function ChessGame() {
         </a>
       </header>
 
-      {/* Main Content - fixed height, no scroll */}
-      <main className="flex-1 flex flex-col lg:flex-row min-h-0">
+      {/* Main Content - stacks on mobile, side-by-side on lg */}
+      <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-y-auto lg:overflow-hidden">
         {/* Left: Board + inline controls */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4 min-h-0">
+        <div className="flex-1 flex flex-col items-center justify-start lg:justify-center gap-4 p-4 min-h-0">
           {/* Agent labels */}
-          <div className="flex items-center gap-4 w-full max-w-lg justify-between">
+          <div className="flex items-center gap-4 w-full max-w-2xl justify-between">
             <div className="flex items-center gap-2">
               <div className="w-3.5 h-3.5 rounded-sm bg-[hsl(40,30%,92%)] border border-border" />
               <span className="text-xs font-mono text-foreground">
@@ -289,11 +289,11 @@ export function ChessGame() {
             </div>
           </div>
 
-          {/* Board with captured pieces on sides */}
-          <div className="flex items-center gap-4">
-            {/* White captured pieces - left side */}
-            <div className="flex flex-col gap-1 items-center min-w-[40px]">
-              <span className="text-[10px] text-muted-foreground mb-1">Lost</span>
+          {/* Board with captured pieces responsive layout */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+            {/* White captured pieces - left on sm+, top on mobile */}
+            <div className="flex flex-row sm:flex-col flex-wrap justify-center gap-1 items-center min-w-[40px] order-2 sm:order-1 max-w-lg sm:max-w-[40px]">
+              <span className="text-[10px] text-muted-foreground hidden sm:block">Lost</span>
               {(() => {
                 const [position] = toFEN(game.state).split(" ")
                 const startingPieces: Record<string, number> = { 'Q': 1, 'R': 2, 'B': 2, 'N': 2, 'P': 8 }
@@ -306,25 +306,27 @@ export function ChessGame() {
                   for (let i = 0; i < captured; i++) whiteCaptured.push(pieceSymbols[piece])
                 }
                 return whiteCaptured.length > 0 ? whiteCaptured.map((p, i) => (
-                  <span key={i} className="text-2xl text-white drop-shadow-md">{p}</span>
-                )) : <span className="text-xs text-muted-foreground">-</span>
+                  <span key={i} className="text-xl sm:text-2xl text-white drop-shadow-md leading-none">{p}</span>
+                )) : <span className="text-[10px] text-muted-foreground">-</span>
               })()}
             </div>
 
-            {/* Chess Board */}
-            <ChessBoard
-              board={game.state.board}
-              turn={game.state.turn}
-              legalMoves={legalMoves}
-              onMove={handleHumanMove}
-              lastMove={lastMove}
-              disabled={!isHumanTurn}
-              perspective="w"
-            />
+            {/* Chess Board Container */}
+            <div className="order-1 sm:order-2 w-full max-w-[95vw] sm:max-w-none flex justify-center">
+              <ChessBoard
+                board={game.state.board}
+                turn={game.state.turn}
+                legalMoves={legalMoves}
+                onMove={handleHumanMove}
+                lastMove={lastMove}
+                disabled={!isHumanTurn}
+                perspective="w"
+              />
+            </div>
 
-            {/* Black captured pieces - right side */}
-            <div className="flex flex-col gap-1 items-center min-w-[40px]">
-              <span className="text-[10px] text-muted-foreground mb-1">Lost</span>
+            {/* Black captured pieces - right on sm+, bottom on mobile */}
+            <div className="flex flex-row sm:flex-col flex-wrap justify-center gap-1 items-center min-w-[40px] order-3 max-w-lg sm:max-w-[40px]">
+              <span className="text-[10px] text-muted-foreground hidden sm:block">Lost</span>
               {(() => {
                 const [position] = toFEN(game.state).split(" ")
                 const startingPieces: Record<string, number> = { 'q': 1, 'r': 2, 'b': 2, 'n': 2, 'p': 8 }
@@ -337,14 +339,14 @@ export function ChessGame() {
                   for (let i = 0; i < captured; i++) blackCaptured.push(pieceSymbols[piece])
                 }
                 return blackCaptured.length > 0 ? blackCaptured.map((p, i) => (
-                  <span key={i} className="text-2xl text-black drop-shadow-md">{p}</span>
-                )) : <span className="text-xs text-muted-foreground">-</span>
+                  <span key={i} className="text-xl sm:text-2xl text-black drop-shadow-md leading-none">{p}</span>
+                )) : <span className="text-[10px] text-muted-foreground">-</span>
               })()}
             </div>
           </div>
 
           {/* Compact inline controls below the board */}
-          <div className="w-full max-w-lg">
+          <div className="w-full max-w-2xl px-2">
             <GameControls
               mode={mode}
               onModeChange={handleModeChange}
@@ -357,17 +359,18 @@ export function ChessGame() {
               onStart={handleStart}
               onReset={resetGame}
               onPause={handlePause}
+              className="w-full"
             />
           </div>
         </div>
 
         {/* Right sidebar: Action Log + History with internal scroll */}
-        <aside className="w-full lg:w-96 border-l border-border flex flex-col bg-card min-h-0">
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="flex-[3] min-h-0 border-b border-border">
+        <aside className="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-border flex flex-col bg-card lg:min-h-0 h-[600px] lg:h-auto overflow-hidden">
+          <div className="flex-1 flex flex-col h-full min-h-0">
+            <div className="flex-[3] min-h-0 border-b border-border overflow-hidden">
               <ActionLog actions={actionLog} />
             </div>
-            <div className="flex-[2] min-h-0">
+            <div className="flex-[2] min-h-0 overflow-hidden">
               <MoveHistory moves={game.history} />
             </div>
           </div>

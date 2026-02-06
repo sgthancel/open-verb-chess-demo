@@ -81,107 +81,110 @@ export function GameControls({
   const isGameOver = status !== "playing"
 
   return (
-    <div className={cn("bg-card border border-border rounded-lg px-4 py-3", className)}>
+    <div className={cn("bg-card border border-border rounded-lg px-3 py-2 sm:px-4 sm:py-3", className)}>
       {/* Row 1: Status + Mode + Actions */}
-      <div className="flex items-center gap-3 flex-wrap">
-        {/* Status */}
-        <div className="flex items-center gap-1.5 mr-1">
-          <div
-            className={cn(
-              "w-2 h-2 rounded-full flex-shrink-0",
-              status === "playing"
-                ? isRunning
-                  ? "bg-primary animate-pulse"
-                  : "bg-muted-foreground"
-                : "bg-primary"
-            )}
-          />
-          <span className={cn("font-mono text-xs font-semibold whitespace-nowrap", getStatusColor(status))}>
-            {getStatusText(status)}
-          </span>
-        </div>
-
-        <div className="w-px h-5 bg-border flex-shrink-0" />
-
-        {/* Mode toggle */}
-        <div className="flex gap-1">
-          <Button
-            variant={mode === "human-vs-ai" ? "default" : "outline"}
-            size="sm"
-            onClick={() => onModeChange("human-vs-ai")}
-            className="font-mono text-[11px] h-7 px-2.5"
-            disabled={isRunning}
-          >
-            Human vs AI
-          </Button>
-          <Button
-            variant={mode === "ai-vs-ai" ? "default" : "outline"}
-            size="sm"
-            onClick={() => onModeChange("ai-vs-ai")}
-            className="font-mono text-[11px] h-7 px-2.5"
-            disabled={isRunning}
-          >
-            AI vs AI
-          </Button>
-        </div>
-
-        <div className="w-px h-5 bg-border flex-shrink-0" />
-
-        {/* Model selectors inline */}
-        {mode === "ai-vs-ai" && (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-mono text-muted-foreground uppercase">W:</span>
-            <Select value={whiteModel} onValueChange={onWhiteModelChange} disabled={isRunning}>
-              <SelectTrigger className="font-mono text-[11px] h-7 w-[130px] bg-secondary border-border">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {AI_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value} className="font-mono text-xs">
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        {/* Status and Mode Row */}
+        <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-4 w-full sm:w-auto flex-wrap">
+          {/* Status */}
+          <div className="flex items-center gap-1.5 min-w-[120px]">
+            <div
+              className={cn(
+                "w-2 h-2 rounded-full flex-shrink-0",
+                status === "playing"
+                  ? isRunning
+                    ? "bg-primary animate-pulse"
+                    : "bg-muted-foreground"
+                  : "bg-primary"
+              )}
+            />
+            <span className={cn("font-mono text-[10px] sm:text-xs font-semibold whitespace-nowrap uppercase tracking-wider", getStatusColor(status))}>
+              {getStatusText(status)}
+            </span>
           </div>
-        )}
 
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase">
-            {mode === "human-vs-ai" ? "VS:" : "B:"}
-          </span>
-          <Select value={blackModel} onValueChange={onBlackModelChange} disabled={isRunning}>
-            <SelectTrigger className="font-mono text-[11px] h-7 w-[130px] bg-secondary border-border">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {AI_MODELS.map((m) => (
-                <SelectItem key={m.value} value={m.value} className="font-mono text-xs">
-                  {m.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Mode toggle */}
+          <div className="flex gap-1">
+            <Button
+              variant={mode === "human-vs-ai" ? "default" : "outline"}
+              size="sm"
+              onClick={() => onModeChange("human-vs-ai")}
+              className="font-mono text-[10px] sm:text-[11px] h-7 px-2 sm:px-2.5"
+              disabled={isRunning}
+            >
+              H vs AI
+            </Button>
+            <Button
+              variant={mode === "ai-vs-ai" ? "default" : "outline"}
+              size="sm"
+              onClick={() => onModeChange("ai-vs-ai")}
+              className="font-mono text-[10px] sm:text-[11px] h-7 px-2 sm:px-2.5"
+              disabled={isRunning}
+            >
+              AI vs AI
+            </Button>
+          </div>
         </div>
 
-        {/* Spacer to push actions right */}
-        <div className="flex-1" />
+        <div className="hidden sm:block w-px h-4 bg-border flex-shrink-0" />
 
-        {/* Action buttons */}
-        <div className="flex gap-1.5 flex-shrink-0">
-          {!isRunning && !isGameOver && (
-            <Button onClick={onStart} size="sm" className="font-mono text-[11px] h-7 px-3">
-              {status === "playing" ? "Start" : "New Game"}
+        {/* Model Selectors and Actions Row */}
+        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:flex-1">
+          {/* Model selectors */}
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+            {mode === "ai-vs-ai" && (
+              <div className="flex items-center gap-1">
+                <span className="text-[9px] font-mono text-muted-foreground uppercase">W</span>
+                <Select value={whiteModel} onValueChange={onWhiteModelChange} disabled={isRunning}>
+                  <SelectTrigger className="font-mono text-[10px] sm:text-[11px] h-7 w-[100px] sm:w-[130px] bg-secondary border-border px-2">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {AI_MODELS.map((m) => (
+                      <SelectItem key={m.value} value={m.value} className="font-mono text-xs">
+                        {m.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div className="flex items-center gap-1">
+              <span className="text-[9px] font-mono text-muted-foreground uppercase">
+                {mode === "human-vs-ai" ? "VS" : "B"}
+              </span>
+              <Select value={blackModel} onValueChange={onBlackModelChange} disabled={isRunning}>
+                <SelectTrigger className="font-mono text-[10px] sm:text-[11px] h-7 w-[100px] sm:w-[130px] bg-secondary border-border px-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {AI_MODELS.map((m) => (
+                    <SelectItem key={m.value} value={m.value} className="font-mono text-xs">
+                      {m.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-1.5 flex-shrink-0">
+            {!isRunning && !isGameOver && (
+              <Button onClick={onStart} size="sm" className="font-mono text-[10px] sm:text-[11px] h-7 px-2.5 sm:px-3">
+                {status === "playing" ? "Start" : "New"}
+              </Button>
+            )}
+            {isRunning && (
+              <Button onClick={onPause} variant="outline" size="sm" className="font-mono text-[10px] sm:text-[11px] h-7 px-2.5 sm:px-3 bg-transparent">
+                Pause
+              </Button>
+            )}
+            <Button onClick={onReset} variant="outline" size="sm" className="font-mono text-[10px] sm:text-[11px] h-7 px-2.5 sm:px-3 bg-transparent">
+              Reset
             </Button>
-          )}
-          {isRunning && (
-            <Button onClick={onPause} variant="outline" size="sm" className="font-mono text-[11px] h-7 px-3 bg-transparent">
-              Pause
-            </Button>
-          )}
-          <Button onClick={onReset} variant="outline" size="sm" className="font-mono text-[11px] h-7 px-3 bg-transparent">
-            Reset
-          </Button>
+          </div>
         </div>
       </div>
     </div>
